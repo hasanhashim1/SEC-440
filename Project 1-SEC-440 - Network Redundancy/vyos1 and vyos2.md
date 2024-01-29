@@ -50,7 +50,7 @@ set interfaces ethernet eth1 description "LAN"
 * taking a snapshot:
   ![8.png](./Images/8.png)
 # vyos2 configuration 
-* Go to edit settings and your LAN in the adapter 2, as shown below:
+* Go to edit settings and add your LAN in the adapter 2, as shown below:
 
 ![9.png](./Images/9.png)
 
