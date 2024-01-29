@@ -1,5 +1,5 @@
 # Network Redundancy
-It is not uncommon to double the amount of equipment when addressing network, service and host redundancy.  You will note that you have two vyos systems (vyos1 and vyos2).  There are several ways to achieve redundancy, but VRRP is typically the choice when using vyos.  You will also note that you have a new version of VYOS than previously exposed to.  Some of the commands have changed such as gateway configuration.\
+It is not uncommon to double the amount of equipment when addressing network, service and host redundancy.  You will note that you have two vyos systems (vyos1 and vyos2).  There are several ways to achieve redundancy, but VRRP is typically the choice when using vyos.  You will also note that you have a new version of VYOS than previously exposed to.  Some of the commands have changed such as gateway configuration.
 
 You have at your disposal, a few IP's on the SEC440-WAN and access to that network.Your very own LAN and OPT networks to do what you wish.  Consult the  [Network Assignments](https://docs.google.com/spreadsheets/d/1LUMpmYONqyubdVlXP8V1MokGXdhnETNVgx-C9QFshJs/edit?usp=sharing) table for further details.
 
@@ -12,7 +12,7 @@ Here's a diagram showing hermione.granger's architecture for week 1.
 * <https://docs.vyos.io/en/latest/configuration/highavailability/index.html>
 *   Possible Web01 note: If web01 does not have the correct password set, it is a great opportunity to learn to reset a CentOS7 Root Password!
    *   Follow the password reset instructions at: <https://www.tecmint.com/reset-forgotten-root-password-in-centos-7-rhel-7/>
-    * Tip: Power on the VM in Vcenter and open the console
+   *   Tip: Power on the VM in Vcenter and open the console
        *   Leave the console tab open and go back to the Vcenter tab
         *   Do an Actions -Power-Reset on Web01 and quickly click back to the Web01 console tab and press the ‘e’ key at the grub loader
 
@@ -37,7 +37,7 @@ Configure and Network the following systems.
 *   Kill the active firewall (it should be vyos1 or vyos2 for the active WAN/LAN connections
 *   Port forwarding should work from WAN to a virtual IP that fronts a team of vyos firewalls ->Web01
    *   http (2 points)
-    *   ssh (2 points)
+   *   ssh (2 points)
        *   with MFA (1 point)
 *   xubuntu-lan should still be able to route to the internet (3 points)
 *   tracepath/traceroute from xubuntu-lan should show the first hop as the redundant firewall.
