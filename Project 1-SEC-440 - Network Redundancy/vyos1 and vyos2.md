@@ -96,10 +96,70 @@ set interfaces ethernet eth1 description "LAN"
 * poweroff and take a snapshot
   ![15.png](./Images/15.png)
 
+# port forwarding/SSH
+For this part I ran the follwoing commands on both vyos1 and vyos2 for ports forwarding:
+```
+conf
+set nat destination rule 10 description "WEB01 on WAN (HTTP)"
+set nat destination rule 10 destination port 80
+set nat destination rule 10 inbound-interface eth0
+set nat destination rule 10 protocol tcp
+set nat destination rule 10 translation address 10.0.5.100
+set nat destination rule 10 translation port 80
+
+set nat destination rule 20 description "WEB01 on WAN (SSH)"
+set nat destination rule 20 destination port 22
+set nat destination rule 20 inbound-interface eth0
+set nat destination rule 20 protocol tcp
+set nat destination rule 20 translation address 10.0.5.100
+set nat destination rule 20 translation port 22
 
 
+commit
+save
+show nat destination rule 10
+show nat destination rule 20
+```
 
+# VRRP
+* Vyos1
+Here are the command that I used to set up the vrrp in the vyos1:
+https://raw.githubusercontent.com/hasanhashim1/SEC-440/main/test.sh
+```
+configure
+set high-availability vrrp group WAN vrid 10
+set high-availability vrrp group WAN interface eth0
+set high-availability vrrp group WAN priority '200'
+set high-availability vrrp group WAN address 10.0.17.105/24
 
+set high-availability vrrp group LAN vrid 20
+set high-availability vrrp group LAN interface eth1
+set high-availability vrrp group LAN priority '200'
+set high-availability vrrp group LAN address 10.0.5.1/24
+
+show high-availability vrrp
+commit
+save
+```
+![31.png](./Images/31.png)
+* Vyos2
+```
+configure
+set high-availability vrrp group LAN vrid 20
+set high-availability vrrp group LAN interface eth1
+set high-availability vrrp group LAN priority '100'
+set high-availability vrrp group LAN address 10.0.5.1/24
+
+set high-availability vrrp group WAN vrid 10
+set high-availability vrrp group WAN interface eth0
+set high-availability vrrp group WAN priority '100'
+set high-availability vrrp group WAN address 10.0.17.105/24
+
+show high-availability vrrp
+commit
+save
+```
+![32.png](./Images/32.png)
 
 
 
