@@ -4,41 +4,26 @@ source /opt/vyatta/etc/functions/script-template
 /opt/vyatta/sbin/vyatta-cfg-cmd-wrapper begin
 
 # Set system host-name
-set system host-name vyos1-HasanHashim
+conf
+set nat destination rule 10 description "WEB01 on WAN (HTTP)"
+set nat destination rule 10 destination port 80
+set nat destination rule 10 inbound-interface eth0
+set nat destination rule 10 protocol tcp
+set nat destination rule 10 translation address 10.0.5.100
+set nat destination rule 10 translation port 80
 
-# Configure interfaces
-set interfaces ethernet eth0 address 10.0.17.15/24
-set interfaces ethernet eth0 description "WAN"
-set interfaces ethernet eth1 address 10.0.5.2/24
-set interfaces ethernet eth1 description "LAN"
+set nat destination rule 20 description "WEB01 on WAN (SSH)"
+set nat destination rule 20 destination port 22
+set nat destination rule 20 inbound-interface eth0
+set nat destination rule 20 protocol tcp
+set nat destination rule 20 translation address 10.0.5.100
+set nat destination rule 20 translation port 22
 
-# Configure static route
-set protocols static route 0.0.0.0/0 next-hop 10.0.17.2
-set system name-server 10.0.17.2
 
-# Commit and save
 commit
 save
-
-# Configure NAT source rule
-set nat source rule 10 outbound-interface eth0
-set nat source rule 10 source address 10.0.5.0/24
-set nat source rule 10 description "Lan to Wan"
-set nat source rule 10 translation address masquerade
-
-# Commit and save
-commit
-save
-
-# Configure DNS forwarding and SSH
-set service dns forwarding listen-address 10.0.5.1
-set service dns forwarding allow-from 10.0.5.0/24
-set service dns forwarding system
-set service ssh listen address 0.0.0.0
-
-# Commit and save
-commit
-save
+show nat destination rule 10
+show nat destination rule 20
 
 # Exit configuration mode
 /opt/vyatta/sbin/vyatta-cfg-cmd-wrapper end
