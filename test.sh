@@ -1,5 +1,5 @@
 #!/bin/vbash
-
+source /opt/vyatta/etc/functions/script-template
 # Start configuration mode
 /opt/vyatta/sbin/vyatta-cfg-cmd-wrapper begin
 
