@@ -4,7 +4,7 @@ source /opt/vyatta/etc/functions/script-template
 /opt/vyatta/sbin/vyatta-cfg-cmd-wrapper begin
 
 
-
+# new
 
 
 
