@@ -47,3 +47,7 @@ Configure and Network the following systems.
 * xubuntu-wan and xubuntu-lan
 * web01*   Redundant WAN and LAN
 * Result
+* 
+
+# Reflection
+Diving into the world of Virtual Router Redundancy Protocol (VRRP) on VyOS turned out to be a real head-scratcher for me during this network redundancy project. Honestly, VRRP was pretty much Greek to me at the start. I had to really get a grip on how it works through endless web pages and forums. The challenge didn't stop there; changing up the command lines I thought I had gotten the hang of, especially for setting up gateways, added to the complexity. It felt like every step forward needed a good chunk of research and a fair bit of trial and error. This whole experience was a bit of a reality check, showing me that there’s always something new to learn and that sometimes, you've got to struggle through the confusing bits to get to those "aha" moments. Definitely a journey filled with some frustration, but looking back, it's pretty cool to see how much I've managed to figure out on my own.
