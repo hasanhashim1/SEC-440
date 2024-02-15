@@ -23,7 +23,7 @@ sudo nano /etc/netplan/*.yaml
 sudo netplan apply
 ```
 
-![9.png](./images/9.png)
+![9.png](./images/18.png)
 
 ### HA2 Network Configuration
 * Configure HA2's network settings with a distinct IP address following the same steps:
