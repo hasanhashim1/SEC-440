@@ -36,6 +36,6 @@ It is anticipated that any High availability solution would involve another syst
 *   Repeat the curl test
   
 ## Configuration Documentation
-1. [vyos1 and vyos2.md](./vyos1 and vyos2.md)
+1. [vyos1 and vyos2.md](./vyos1%20and%20vyos2.md)
 2. [web02.md](./web02.md)
-3. [ha1 and ha2.md](./ha1 and ha2.md)
+3. [ha1 and ha2.md](./ha1%20and%20ha2.md)
