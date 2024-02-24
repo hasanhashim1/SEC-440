@@ -2,8 +2,8 @@
 
 # Define variables for MySQL connection
 DB_SERVER="10.0.5.201" # Change to your MySQL server IP
-DB_USERNAME="your_db_username" # Change to your MySQL username
-DB_PASSWORD="your_db_password" # Change to your MySQL password
+DB_USERNAME="root" # Change to your MySQL username
+DB_PASSWORD="Passw0rd!" # Change to your MySQL password
 DB_NAME="cats" # Change to your database name
 
 # Install PHP and necessary extensions
