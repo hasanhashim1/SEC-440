@@ -1,57 +1,81 @@
 #!/bin/bash
 
-echo "Enter the system type you are running this script on (u1/u2/u3/ha1/ha2): "
-read system_type
+# Define variables for MySQL connection
+DB_SERVER="10.0.5.201" # Change to your MySQL server IP
+DB_USERNAME="your_db_username" # Change to your MySQL username
+DB_PASSWORD="your_db_password" # Change to your MySQL password
+DB_NAME="cats" # Change to your database name
 
-MYSQL_ROOT_PASSWORD='Passw0rd!'  # Change this
-HAPROXY_USER_PASSWORD='Passw0rd!'  # Change this
+# Install PHP and necessary extensions
+echo "Installing PHP and necessary extensions..."
+sudo yum install -y php php-mysqlnd
 
-setup_mysql_server() {
-    echo "Setting up MySQL on $system_type ..."
+# Set SELinux boolean for HTTPD to connect to database
+echo "Setting SELinux boolean for HTTPD to connect to database..."
+sudo setsebool -P httpd_can_network_connect_db on
 
-    # Drop the user if it exists and create anew to avoid ERROR 1396
-    mysql -u root -p"$MYSQL_ROOT_PASSWORD" <<-EOF
-DROP USER IF EXISTS 'haproxy_check'@'10.0.6.10';
-CREATE USER 'haproxy_check'@'10.0.6.10';
-GRANT ALL PRIVILEGES ON *.* TO 'haproxy_root'@'10.0.6.10' IDENTIFIED BY '$HAPROXY_USER_PASSWORD' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
+# Restart HTTPD service to apply changes
+echo "Restarting HTTPD service..."
+sudo systemctl restart httpd.service
+
+# Create PHP info file
+echo "Creating PHP info file..."
+cat <<EOF | sudo tee /var/www/html/info.php
+<?php
+phpinfo();
+?>
 EOF
 
-    # Update bind address and restart MySQL
-    sudo sed -i 's/^bind-address\s*=\s*127\.0\.0\.1/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf || echo "Failed to update bind-address in 50-server.cnf"
-    sudo systemctl restart mysql
-}
-
-setup_haproxy_server() {
-    echo "Configuring HAProxy on $system_type ..."
-
-    sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy || echo "Failed to enable HAProxy in /etc/default/haproxy"
-    sudo apt-get update && sudo apt-get install -y mysql-client
-
-    # Append HAProxy configuration for MySQL load balancing
-    cat <<-EOF | sudo tee -a /etc/haproxy/haproxy.cfg
-listen mysql-cluster
-    bind *:3306
-    mode tcp
-    option mysql-check user haproxy_check
-    balance roundrobin
-    server mysql-1 10.0.5.201:3306 check fall 3 rise 2
-    server mysql-2 10.0.5.202:3306 check fall 3 rise 2
-    server mysql-3 10.0.5.203:3306 check fall 3 rise 2
+# Create HTML form and PHP script for database interaction
+echo "Creating HTML form and PHP script for database interaction..."
+# HTML form
+cat <<EOF | sudo tee /var/www/html/index.html
+<html>
+<body>
+<h1>Cat Info Database</h1>
+<form action="cats.php" method="post">
+Which cat do you want to know about? (Options: Whiskers, Shadow)</br>
+Cat name: <input type="text" name="name"></br>
+<input type="submit">
+</form>
+</body>
+</html>
 EOF
 
-    sudo systemctl restart haproxy || echo "Failed to restart HAProxy"
-    echo "HAProxy configured. It's recommended to reboot the server to ensure all configurations are applied correctly."
+# PHP script
+cat <<EOF | sudo tee /var/www/html/cats.php
+<?php
+\$servername = "$DB_SERVER";
+\$username = "$DB_USERNAME";
+\$password = "$DB_PASSWORD";
+\$dbname = "$DB_NAME";
+
+// Get name from HTML form
+\$name = \$_POST['name'];
+
+// Connect to DB
+\$connect = new mysqli(\$servername, \$username, \$password, \$dbname);
+if (\$connect->connect_error) {
+    die("Connection failed: " . \$connect->connect_error);
 }
 
-case $system_type in
-    u1|u2|u3)
-        setup_mysql_server
-        ;;
-    ha1|ha2)
-        setup_haproxy_server
-        ;;
-    *)
-        echo "Invalid system type entered. Please run the script again with a valid system type (u1/u2/u3/ha1/ha2)."
-        ;;
-esac
+// SQL query
+\$query = "SELECT * FROM tabbies WHERE name = '".\$name."'";
+\$output = \$connect->query(\$query) or die(\$connect->error.__LINE__);
+if (\$output->num_rows > 0) {
+    while(\$row = \$output->fetch_assoc()) {
+        echo "Name: " . \$row["name"] . "<br>";
+        echo "Age: " . \$row["age"] . "<br>";
+        echo "Birthday: " . \$row["birthday"] . "<br>";
+        echo "Weight: " . \$row["weight"] . "<br>";
+        echo "Fur Color: " . \$row["fur_color"] . "<br>";
+        echo "Description: " . \$row["description"] . "<br><br>";
+    }
+} else {
+    echo "No results";
+}
+\$connect->close();
+?>
+EOF
+
+echo "Setup complete. Visit http://your_server_ip/info.php and http://your_server_ip/index.html to check."
